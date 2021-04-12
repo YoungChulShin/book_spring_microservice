@@ -1,1 +1,1 @@
-# book_spring_microservice
+# 스프링으로하는 마이크로서비스 구축 책 코드
