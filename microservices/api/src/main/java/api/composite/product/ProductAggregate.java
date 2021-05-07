@@ -14,7 +14,7 @@ public class ProductAggregate {
 
   private final List<ReviewSummary> reviews;
 
-  private final ServiceAddress serviceAddresses;
+  private final ServiceAddresses serviceAddresses;
 
   public ProductAggregate(
       int productId,
@@ -22,7 +22,7 @@ public class ProductAggregate {
       int weight,
       List<RecommendationSummary> recommendations,
       List<ReviewSummary> reviews,
-      ServiceAddress serviceAddresses) {
+      ServiceAddresses serviceAddresses) {
     this.productId = productId;
     this.name = name;
     this.weight = weight;

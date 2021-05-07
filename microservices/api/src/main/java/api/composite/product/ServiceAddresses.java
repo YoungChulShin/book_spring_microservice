@@ -1,6 +1,6 @@
 package api.composite.product;
 
-public class  ServiceAddress {
+public class ServiceAddresses {
 
   private final String cmp;
 
@@ -10,14 +10,14 @@ public class  ServiceAddress {
 
   private final String rec;
 
-  public ServiceAddress() {
+  public ServiceAddresses() {
     cmp = null;
     pro = null;
     rev = null;
     rec = null;
   }
 
-  public ServiceAddress(String cmp, String pro, String rev, String rec) {
+  public ServiceAddresses(String cmp, String pro, String rev, String rec) {
     this.cmp = cmp;
     this.pro = pro;
     this.rev = rev;
