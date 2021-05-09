@@ -2,13 +2,10 @@ package microservices.core.product;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication(
-    scanBasePackageClasses = {
-        ProductServiceApplication.class,
-        util.http.ServiceUtil.class
-    }
-)
+@SpringBootApplication
+@ComponentScan(value = {"microservices.core.product", "util"})
 public class ProductServiceApplication {
 
   public static void main(String[] args) {
