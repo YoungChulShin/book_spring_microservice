@@ -60,7 +60,7 @@ public class ProductCompositeIntegration implements
   @Override
   public Product getProduct(int productId) {
     try {
-      String url = productServiceUrl + "product Id";
+      String url = productServiceUrl + productId;
       LOG.debug("Will call getProductAPI on URL: {}", url);
 
       Product product = restTemplate.getForObject(url, Product.class);
