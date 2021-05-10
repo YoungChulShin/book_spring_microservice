@@ -53,8 +53,8 @@ public class ProductCompositeIntegration implements
     this.productServiceUrl =
         "http://" + productServiceHost + ":" + productServicePort + "/product/";
     this.recommendationServiceUrl =
-        "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/product/";
-    this.reviewServiceUrl = "http://" + reviewServiceHost + ":" + reviewServicePort + "/product/";
+        "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation?productId=";
+    this.reviewServiceUrl = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review?productId=";
   }
 
   @Override
@@ -113,15 +113,23 @@ public class ProductCompositeIntegration implements
 
   @Override
   public List<Review> getReviews(int productId) {
-    String url = reviewServiceUrl + productId;
+    try {
+      String url = reviewServiceUrl + productId;
 
-    LOG.debug("Will call getRewvies API on URL: {}, url");
-    List<Review> reviews = restTemplate.exchange(
-        url,
-        HttpMethod.GET,
-        null,
-        new ParameterizedTypeReference<List<Review>>() {
-        }).getBody();
-    return reviews;
+      LOG.debug("Will call getRewvies API on URL: {}, url");
+      List<Review> reviews = restTemplate.exchange(
+          url,
+          HttpMethod.GET,
+          null,
+          new ParameterizedTypeReference<List<Review>>() {
+          }).getBody();
+
+      LOG.debug("Found {} reviews for a product with id: {}", reviews.size(), productId);
+      return reviews;
+    } catch (Exception ex) {
+      LOG.warn("Got an exception while requesting recommendations, return zero recommendations: {}",
+          ex.getMessage());
+      return new ArrayList<>();
+    }
   }
 }

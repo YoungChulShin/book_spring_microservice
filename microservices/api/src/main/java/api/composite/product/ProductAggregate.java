@@ -1,7 +1,9 @@
 package api.composite.product;
 
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 public class ProductAggregate {
 
   private final int productId;

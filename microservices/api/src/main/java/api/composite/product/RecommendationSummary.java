@@ -1,5 +1,8 @@
 package api.composite.product;
 
+import lombok.Getter;
+
+@Getter
 public class RecommendationSummary {
 
   private final int recommendationId;
