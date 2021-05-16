@@ -16,10 +16,11 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebFlux;
 
 @SpringBootApplication
-@ComponentScan(value = {"microservices.composite.product", "util"})
 @EnableSwagger2
+@ComponentScan(value = {"microservices.composite.product", "util"})
 public class ProductCompositeServiceApplication {
 
   @Value("${api.common.version}") String apiVersion;
@@ -59,4 +60,6 @@ public class ProductCompositeServiceApplication {
               apiLicenseUrl,
               Collections.emptyList()));
   }
+
+
 }
