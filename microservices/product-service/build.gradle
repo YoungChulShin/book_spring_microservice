@@ -24,9 +24,15 @@ dependencies {
 
     implementation('org.springframework.boot:spring-boot-starter-actuator')
     implementation('org.springframework.boot:spring-boot-starter-webflux')
+    implementation('org.mapstruct:mapstruct')
+    implementation('org.springframework.boot:spring-boot-start-data-mongodb')
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor'
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 }
 
 test {
