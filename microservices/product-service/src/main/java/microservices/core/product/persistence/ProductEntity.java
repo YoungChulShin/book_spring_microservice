@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collation = "products")
+@Document(collection = "products")
 @Getter
 public class ProductEntity {
 
@@ -30,5 +30,9 @@ public class ProductEntity {
     this.productId = productId;
     this.name = name;
     this.weight = weight;
+  }
+
+  public void updateName(String name) {
+    this.name = name;
   }
 }
