@@ -2,13 +2,13 @@ package api.core.product;
 
 public class Product {
 
-  private final int productId;
+  private int productId;
 
-  private final String name;
+  private String name;
 
-  private final int weight;
+  private int weight;
 
-  private final String serviceAddress;
+  private String serviceAddress;
 
   public Product() {
     this.productId = 0;
@@ -38,5 +38,9 @@ public class Product {
 
   public String getServiceAddress() {
     return serviceAddress;
+  }
+
+  public void updateServiceAddress(String serviceAddress) {
+    this.serviceAddress = serviceAddress;
   }
 }
