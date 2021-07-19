@@ -2,9 +2,11 @@ package microservices.core.recommendation.services;
 
 import api.core.recommendation.Recommendation;
 import api.core.recommendation.RecommendationService;
-import java.util.ArrayList;
+import com.mongodb.DuplicateKeyException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import microservices.core.recommendation.persistence.RecommendationEntity;
+import microservices.core.recommendation.persistence.RecommendationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +19,24 @@ public class RecommendationServiceImpl implements RecommendationService {
 
   private static final Logger LOG = LoggerFactory.getLogger(RecommendationServiceImpl.class);
 
+  private final RecommendationRepository recommendationRepository;
+
+  private final RecommendationMapper recommendationMapper;
+
   private final ServiceUtil serviceUtil;
+
+
+  @Override
+  public Recommendation createRecommendation(Recommendation body) {
+    try {
+      RecommendationEntity entity = recommendationMapper.apiToEntity(body);
+      RecommendationEntity newEntity = recommendationRepository.save(entity);
+
+      return recommendationMapper.entityToApi(newEntity);
+    } catch(DuplicateKeyException dke) {
+      throw new InvalidInputException("Duplicate key, Product Id: " + body.getProductId() + ", Recommendation Id:" + body.getRecommendationId());
+    }
+  }
 
   @Override
   public List<Recommendation> getRecommendations(int productId) {
@@ -25,21 +44,17 @@ public class RecommendationServiceImpl implements RecommendationService {
       throw new InvalidInputException("Invalid productId: " + productId);
     }
 
-    if (productId == 113) {
-      LOG.debug("No recommendations found for productId: {}", productId);
-      return new ArrayList<>();
-    }
+    List<RecommendationEntity> entityList = recommendationRepository.findByProductId(productId);
+    List<Recommendation> recommendationList = recommendationMapper.entityListToApiList(entityList);
+    recommendationList.forEach(r -> r.updateServiceAddress(serviceUtil.getServiceAddress()));
 
-    List<Recommendation> list = new ArrayList<>();
-    list.add(new Recommendation(productId, 1, "Author 1", 1, "Content 1",
-        serviceUtil.getServiceAddress()));
-    list.add(new Recommendation(productId, 2, "Author 2", 2, "Content 2",
-        serviceUtil.getServiceAddress()));
-    list.add(new Recommendation(productId, 3, "Author 3", 3, "Content 3",
-        serviceUtil.getServiceAddress()));
+    LOG.debug("/recommendation response size: {}", recommendationList.size());
 
-    LOG.debug("/recommendation response size: {}", list.size());
+    return recommendationList;
+  }
 
-    return list;
+  @Override
+  public void deleteRecommendations(int productId) {
+    recommendationRepository.deleteAll(recommendationRepository.findByProductId(productId));
   }
 }
