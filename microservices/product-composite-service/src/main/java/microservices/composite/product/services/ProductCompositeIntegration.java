@@ -58,6 +58,15 @@ public class ProductCompositeIntegration implements
   }
 
   @Override
+  public Product createProduct(Product body) {
+    try {
+      return restTemplate.postForObject(productServiceUrl, body, Product.class);
+    } catch (HttpClientErrorException ex) {
+      throw handleHttpClientException(ex);
+    }
+  }
+
+  @Override
   public Product getProduct(int productId) {
     try {
       String url = productServiceUrl + productId;
@@ -81,11 +90,21 @@ public class ProductCompositeIntegration implements
     }
   }
 
-  private String getErrorMessage(HttpClientErrorException ex) {
+  @Override
+  public void deleteProduct(int productId) {
     try {
-      return mapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
-    } catch (IOException ioEx) {
-      return ex.getMessage();
+      restTemplate.delete(productServiceUrl + "/" + productId);
+    } catch (HttpClientErrorException ex) {
+      throw handleHttpClientException(ex);
+    }
+  }
+
+  @Override
+  public Recommendation createRecommendation(Recommendation body) {
+    try {
+      return restTemplate.postForObject(recommendationServiceUrl, body, Recommendation.class);
+    } catch (HttpClientErrorException ex) {
+      throw handleHttpClientException(ex);
     }
   }
 
@@ -112,6 +131,24 @@ public class ProductCompositeIntegration implements
   }
 
   @Override
+  public void deleteRecommendations(int productId) {
+    try {
+      restTemplate.delete(recommendationServiceUrl + "?productId=" + productId);
+    } catch (HttpClientErrorException ex) {
+      throw handleHttpClientException(ex);
+    }
+  }
+
+  @Override
+  public Review createReview(Review body) {
+    try {
+      return restTemplate.postForObject(reviewServiceUrl, body, Review.class);
+    } catch (HttpClientErrorException ex) {
+      throw handleHttpClientException(ex);
+    }
+  }
+
+  @Override
   public List<Review> getReviews(int productId) {
     try {
       String url = reviewServiceUrl + productId;
@@ -130,6 +167,34 @@ public class ProductCompositeIntegration implements
       LOG.warn("Got an exception while requesting recommendations, return zero recommendations: {}",
           ex.getMessage());
       return new ArrayList<>();
+    }
+  }
+
+  @Override
+  public void deleteReviews(int productId) {
+    try {
+      restTemplate.delete(reviewServiceUrl + "?productId=" + productId);
+    } catch (HttpClientErrorException ex) {
+      throw handleHttpClientException(ex);
+    }
+  }
+
+  private RuntimeException handleHttpClientException(HttpClientErrorException ex) {
+    switch (ex.getStatusCode()) {
+      case NOT_FOUND:
+        return new NotFoundException(getErrorMessage(ex));
+      case UNPROCESSABLE_ENTITY:
+        return new InvalidInputException(getErrorMessage(ex));
+      default:
+        return ex;
+    }
+  }
+
+  private String getErrorMessage(HttpClientErrorException ex) {
+    try {
+      return mapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
+    } catch (IOException ioEx) {
+      return ex.getMessage();
     }
   }
 }

@@ -11,9 +11,12 @@ public class ReviewSummary {
 
   private final String subject;
 
-  public ReviewSummary(int reviewId, String author, String subject) {
+  private final String content;
+
+  public ReviewSummary(int reviewId, String author, String subject, String content) {
     this.reviewId = reviewId;
     this.author = author;
     this.subject = subject;
+    this.content = content;
   }
 }
