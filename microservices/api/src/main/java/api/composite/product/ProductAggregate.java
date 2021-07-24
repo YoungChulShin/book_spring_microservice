@@ -2,6 +2,8 @@ package api.composite.product;
 
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 public class ProductAggregate {
@@ -17,6 +19,15 @@ public class ProductAggregate {
   private final List<ReviewSummary> reviews;
 
   private final ServiceAddresses serviceAddresses;
+
+  public ProductAggregate() {
+    productId = 0;
+    name = null;
+    weight = 0;
+    recommendations = null;
+    reviews = null;
+    serviceAddresses = null;
+  }
 
   public ProductAggregate(
       int productId,
