@@ -7,12 +7,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(componentModel = "spring:")
+@Mapper(componentModel = "spring")
 public interface RecommendationMapper {
 
   @Mappings({
-      @Mapping(target = "rate", source = "entity.rating"),
-      @Mapping(target = "serviceAddress", ignore = true)})
+      @Mapping(target = "rate", source="entity.rating"),
+      @Mapping(target = "serviceAddress", ignore = true)
+  })
   Recommendation entityToApi(RecommendationEntity entity);
 
   @Mappings({
@@ -23,7 +24,4 @@ public interface RecommendationMapper {
   RecommendationEntity apiToEntity(Recommendation api);
 
   List<Recommendation> entityListToApiList(List<RecommendationEntity> entity);
-
-  List<RecommendationEntity> apiListToEntityList(List<Recommendation> api);
-
 }

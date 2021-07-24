@@ -45,4 +45,7 @@ public class RecommendationEntity {
     this.rating = rating;
     this.content = content;
   }
+  public void setRating(int rating) {
+    this.rating = rating;
+  }
 }

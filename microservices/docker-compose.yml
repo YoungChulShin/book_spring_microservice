@@ -46,7 +46,7 @@ services:
     command: mongod --smallfiles
 
   mysql:
-    image: mysql:5.7
+    image: mysql:5.7.30
     mem_limit: 350m
     ports:
       - "3306:3306"

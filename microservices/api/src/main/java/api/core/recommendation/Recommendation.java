@@ -1,5 +1,8 @@
 package api.core.recommendation;
 
+import lombok.Setter;
+
+@Setter
 public class Recommendation {
 
   private int productId;
