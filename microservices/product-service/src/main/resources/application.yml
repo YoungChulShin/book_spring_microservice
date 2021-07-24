@@ -12,3 +12,4 @@ logging:
   level:
     root: INFO
     microservices: DEBUG
+    org.springframework.data.mongodb.core.MogoTemplate: DEBUG
