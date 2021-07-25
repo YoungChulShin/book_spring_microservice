@@ -3,13 +3,14 @@ package microservices.core.recommendation.services;
 import api.core.recommendation.Recommendation;
 import api.core.recommendation.RecommendationService;
 import com.mongodb.DuplicateKeyException;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import microservices.core.recommendation.persistence.RecommendationEntity;
 import microservices.core.recommendation.persistence.RecommendationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import util.exceptions.InvalidInputException;
 import util.http.ServiceUtil;
 
@@ -28,33 +29,46 @@ public class RecommendationServiceImpl implements RecommendationService {
 
   @Override
   public Recommendation createRecommendation(Recommendation body) {
-    try {
-      RecommendationEntity entity = recommendationMapper.apiToEntity(body);
-      RecommendationEntity newEntity = recommendationRepository.save(entity);
-
-      return recommendationMapper.entityToApi(newEntity);
-    } catch(DuplicateKeyException dke) {
-      throw new InvalidInputException("Duplicate key, Product Id: " + body.getProductId() + ", Recommendation Id:" + body.getRecommendationId());
+    if (body.getProductId() < 1) {
+      throw new InvalidInputException("Invalid productId: " + body.getProductId());
     }
+
+    RecommendationEntity entity = recommendationMapper.apiToEntity(body);
+    Mono<Recommendation> newEntity = recommendationRepository.save(entity)
+        .log()
+        .onErrorMap(
+            DuplicateKeyException.class,
+            ex -> new InvalidInputException(
+                "Duplicate key, Product Id: " + body.getProductId() +
+                    ", Recommendation Id:" + body.getRecommendationId()))
+        .map(e -> recommendationMapper.entityToApi(e));
+
+    return newEntity.block();
   }
 
   @Override
-  public List<Recommendation> getRecommendations(int productId) {
+  public Flux<Recommendation> getRecommendations(int productId) {
     if (productId < 1) {
       throw new InvalidInputException("Invalid productId: " + productId);
     }
 
-    List<RecommendationEntity> entityList = recommendationRepository.findByProductId(productId);
-    List<Recommendation> recommendationList = recommendationMapper.entityListToApiList(entityList);
-    recommendationList.forEach(r -> r.updateServiceAddress(serviceUtil.getServiceAddress()));
-
-    LOG.debug("/recommendation response size: {}", recommendationList.size());
-
-    return recommendationList;
+    return recommendationRepository.findByProductId(productId)
+        .log()
+        .map(e -> recommendationMapper.entityToApi(e))
+        .map(e -> {
+          e.updateServiceAddress(serviceUtil.getServiceAddress());
+          return e;
+        });
   }
 
   @Override
   public void deleteRecommendations(int productId) {
-    recommendationRepository.deleteAll(recommendationRepository.findByProductId(productId));
+    if (productId < 1) {
+      throw new InvalidInputException("Invalid productId: " + productId);
+    }
+
+    recommendationRepository
+        .deleteAll(recommendationRepository.findByProductId(productId))
+        .block();
   }
 }
