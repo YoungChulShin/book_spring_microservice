@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import reactor.core.publisher.Mono;
 
 @Api
 public interface ProductCompositeService {
@@ -25,7 +26,7 @@ public interface ProductCompositeService {
       }
   )
   @GetMapping("/product-composite/{productId}")
-  ProductAggregate getProduct(@PathVariable int productId);
+  Mono<ProductAggregate> getCompositeProduct(@PathVariable int productId);
 
   @ApiOperation(
       value = "${api.product-composite.create-composite-product.description}",
