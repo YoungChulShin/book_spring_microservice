@@ -6,15 +6,19 @@ import api.core.recommendation.Recommendation;
 import api.core.recommendation.RecommendationService;
 import api.core.review.Review;
 import api.core.review.ReviewService;
+import api.event.Event;
+import api.event.Event.Type;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.Output;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -23,6 +27,8 @@ import util.exceptions.InvalidInputException;
 import util.exceptions.NotFoundException;
 import util.http.HttpErrorInfo;
 
+
+@EnableBinding(ProductCompositeIntegration.MessageSource.class)
 @Component
 public class ProductCompositeIntegration implements
     ProductService,
@@ -32,17 +38,34 @@ public class ProductCompositeIntegration implements
   private static final Logger LOG = LoggerFactory.getLogger(ProductCompositeIntegration.class);
 
   private final WebClient webClient;
-  private final RestTemplate restTemplate;
   private final ObjectMapper mapper;
   private final String productServiceUrl;
   private final String recommendationServiceUrl;
   private final String reviewServiceUrl;
 
+  private MessageSource messageSources;
+
+  public interface MessageSource {
+
+    String OUTPUT_PRODUCTS = "output-products";
+    String OUTPUT_RECOMMENDATIONS = "output-recommendations";
+    String OUTPUT_REVIEWS = "output-review";
+
+    @Output(OUTPUT_PRODUCTS)
+    MessageChannel outputProducts();
+
+    @Output(OUTPUT_RECOMMENDATIONS)
+    MessageChannel outputRecommendations();
+
+    @Output(OUTPUT_REVIEWS)
+    MessageChannel outputReviews();
+  }
+
   @Autowired
   public ProductCompositeIntegration(
       WebClient.Builder webClient,
-      RestTemplate restTemplate,
       ObjectMapper mapper,
+      MessageSource messageSources,
       @Value("${app.product-service.host}") String productServiceHost,
       @Value("${app.product-service.port}") int productServicePort,
       @Value("${app.recommendation-service.host}") String recommendationServiceHost,
@@ -50,8 +73,9 @@ public class ProductCompositeIntegration implements
       @Value("${app.review-service.host}") String reviewServiceHost,
       @Value("${app.review-service.port}") int reviewServicePort) {
     this.webClient = webClient.build();
-    this.restTemplate = restTemplate;
     this.mapper = mapper;
+    this.messageSources = messageSources;
+
     this.productServiceUrl =
         "http://" + productServiceHost + ":" + productServicePort + "/product/";
     this.recommendationServiceUrl =
@@ -61,11 +85,11 @@ public class ProductCompositeIntegration implements
 
   @Override
   public Product createProduct(Product body) {
-    try {
-      return restTemplate.postForObject(productServiceUrl, body, Product.class);
-    } catch (HttpClientErrorException ex) {
-      throw handleHttpClientException(ex);
-    }
+    messageSources
+        .outputProducts()
+        .send(MessageBuilder.withPayload(
+            new Event(Type.CREATE, body.getProductId(), body)).build());
+    return body;
   }
 
   @Override
@@ -83,20 +107,24 @@ public class ProductCompositeIntegration implements
 
   @Override
   public void deleteProduct(int productId) {
-    try {
-      restTemplate.delete(productServiceUrl + "/" + productId);
-    } catch (HttpClientErrorException ex) {
-      throw handleHttpClientException(ex);
-    }
+    messageSources
+        .outputProducts()
+        .send(MessageBuilder.withPayload(new Event(Type.DELETE, productId, null)).build());
+//    try {
+//      restTemplate.delete(productServiceUrl + "/" + productId);
+//    } catch (HttpClientErrorException ex) {
+//      throw handleHttpClientException(ex);
+//    }
   }
 
   @Override
   public Recommendation createRecommendation(Recommendation body) {
-    try {
-      return restTemplate.postForObject(recommendationServiceUrl, body, Recommendation.class);
-    } catch (HttpClientErrorException ex) {
-      throw handleHttpClientException(ex);
-    }
+    messageSources
+        .outputRecommendations()
+        .send(MessageBuilder.withPayload(
+            new Event(Type.CREATE, body.getProductId(), body)).build());
+
+    return body;
   }
 
   @Override
@@ -111,20 +139,19 @@ public class ProductCompositeIntegration implements
 
   @Override
   public void deleteRecommendations(int productId) {
-    try {
-      restTemplate.delete(recommendationServiceUrl + "?productId=" + productId);
-    } catch (HttpClientErrorException ex) {
-      throw handleHttpClientException(ex);
-    }
+    messageSources
+        .outputRecommendations()
+        .send(MessageBuilder.withPayload(new Event(Type.DELETE, productId, null)).build());
   }
 
   @Override
   public Review createReview(Review body) {
-    try {
-      return restTemplate.postForObject(reviewServiceUrl, body, Review.class);
-    } catch (HttpClientErrorException ex) {
-      throw handleHttpClientException(ex);
-    }
+    messageSources
+        .outputReviews()
+        .send(MessageBuilder.withPayload(
+            new Event(Type.CREATE, body.getProductId(), body)).build());
+
+    return body;
   }
 
   @Override
@@ -140,24 +167,11 @@ public class ProductCompositeIntegration implements
 
   @Override
   public void deleteReviews(int productId) {
-    try {
-      restTemplate.delete(reviewServiceUrl + "?productId=" + productId);
-    } catch (HttpClientErrorException ex) {
-      throw handleHttpClientException(ex);
-    }
+    messageSources
+        .outputReviews()
+        .send(MessageBuilder.withPayload(
+            new Event(Type.DELETE, productId, null)).build());
   }
-
-  private RuntimeException handleHttpClientException(HttpClientErrorException ex) {
-    switch (ex.getStatusCode()) {
-      case NOT_FOUND:
-        return new NotFoundException(getErrorMessage(ex));
-      case UNPROCESSABLE_ENTITY:
-        return new InvalidInputException(getErrorMessage(ex));
-      default:
-        return ex;
-    }
-  }
-
   private Throwable handleException(Throwable ex) {
     if (!(ex instanceof WebClientResponseException)) {
       LOG.warn("Got an unexpected error: {}, will throw it", ex.toString());
@@ -177,14 +191,6 @@ public class ProductCompositeIntegration implements
   }
 
   private String getErrorMessage(WebClientResponseException ex) {
-    try {
-      return mapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
-    } catch (IOException ioEx) {
-      return ex.getMessage();
-    }
-  }
-
-  private String getErrorMessage(HttpClientErrorException ex) {
     try {
       return mapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
     } catch (IOException ioEx) {
