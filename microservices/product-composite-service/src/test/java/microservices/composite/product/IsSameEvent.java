@@ -2,6 +2,7 @@ package microservices.composite.product;
 
 import api.event.Event;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,8 +17,8 @@ public class IsSameEvent extends TypeSafeMatcher<String> {
 
   private ObjectMapper mapper = new ObjectMapper();
 
-  private IsSameEvent(Event expectedEvemt) {
-    this.expectedEvent = expectedEvemt;
+  private IsSameEvent(Event expectedEvent) {
+    this.expectedEvent = expectedEvent;
   }
 
   public static Matcher<String> sameEventExceptCreatedAt(Event expectedEvent) {
@@ -31,9 +32,11 @@ public class IsSameEvent extends TypeSafeMatcher<String> {
     }
 
     Map mapEvent = convertToStringMap(item);
+    mapEvent.remove("eventCreatedAt");
 
+    Map mapExpectedEvent = getMapWithoutCreatedAt(expectedEvent);
 
-    return false;
+    return mapEvent.equals(mapExpectedEvent);
   }
 
   @Override
@@ -42,10 +45,21 @@ public class IsSameEvent extends TypeSafeMatcher<String> {
   }
 
   private Map convertToStringMap(String eventAsJson) {
-    try {
-      return mapper.readValue(eventAsJson, new TypeReference<HashMap>() {});
-    } catch (IOException ex) {
+      try {
+        return mapper.readValue(eventAsJson, new TypeReference<HashMap>() {});
+      } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
+  }
+
+  private Map convertObjectToMap(Object object) {
+    JsonNode node = mapper.convertValue(object, JsonNode.class);
+    return mapper.convertValue(node, Map.class);
+  }
+
+  private Map getMapWithoutCreatedAt(Event event) {
+    Map mapEvent = convertObjectToMap(event);
+    mapEvent.remove("eventCreatedAt");
+    return mapEvent;
   }
 }
