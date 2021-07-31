@@ -7,6 +7,43 @@ spring:
       host: localhost
       port: 27017
       database: product-db
+  cloud:
+    stream:
+      defaultBinder: rabbit
+      default:
+        contentType: application/json
+      bindings:
+        input:
+          destination: products
+          group: productsGroup
+          consumer:
+            maxAttemps: 3
+            backOffInitnialInterval: 500
+            backOffMaxInterval: 1000
+            backOffMultiplier: 2.0
+      rabbit:
+        bindings:
+          input:
+            consumer:
+              autoBindDlq: true
+              republishToDlq: true
+      kafka:
+        binder:
+          brokers: localhost
+          defaultBrokerPort: 9092
+        bindings:
+          input:
+            consumer:
+              enableDlq: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+
+
+
 
 logging:
   level:
