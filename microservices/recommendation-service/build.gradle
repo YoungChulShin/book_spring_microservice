@@ -16,6 +16,7 @@ configurations {
 
 ext {
     mapstructVersion = "1.3.1.Final"
+    springCloudVersion = "Hoxton.SR6"
 }
 
 repositories {
@@ -30,6 +31,8 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-webflux')
     implementation("org.mapstruct:mapstruct:${mapstructVersion}")
     implementation('org.springframework.boot:spring-boot-starter-data-mongodb')
+    implementation('org.springframework.cloud:spring-cloud-starter-stream-rabbit')
+    implementation('org.springframework.cloud:spring-cloud-starter-stream-kafka')
 
     compileOnly 'org.projectlombok:lombok'
     compileOnly "org.mapstruct:mapstruct-processor:${mapstructVersion}"
@@ -38,8 +41,15 @@ dependencies {
     testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+    testImplementation('org.springframework.cloud:spring-cloud-stream-test-support')
 }
 
 test {
     useJUnitPlatform()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
