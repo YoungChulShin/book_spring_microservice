@@ -3,8 +3,16 @@ package microservices.composite.product;
 import static springfox.documentation.builders.RequestHandlerSelectors.basePackage;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import microservices.composite.product.services.ProductCompositeIntegration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.health.DefaultReactiveHealthContributorRegistry;
+import org.springframework.boot.actuate.health.HealthContributor;
+import org.springframework.boot.actuate.health.ReactiveHealthContributorRegistry;
+import org.springframework.boot.actuate.health.ReactiveHealthIndicator;
+import org.springframework.boot.actuate.health.StatusAggregator;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -60,6 +68,20 @@ public class ProductCompositeServiceApplication {
               apiLicenseUrl,
               Collections.emptyList()));
   }
+
+//  @Autowired
+//  StatusAggregator statusAggregator;
+//
+//  @Autowired
+//  ProductCompositeIntegration integration;
+//
+//  @Bean
+//  ReactiveHealthIndicator coreServices() {
+//    ReactiveHealthContributorRegistry registry = new DefaultReactiveHealthContributorRegistry(new LinkedHashMap<>());
+//
+//
+//    registry.registerContributor("product", () -> integration.getProductHealth());
+//  }
 
 
 }
