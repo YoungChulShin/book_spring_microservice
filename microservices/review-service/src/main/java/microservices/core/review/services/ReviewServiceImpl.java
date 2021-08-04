@@ -2,8 +2,6 @@ package microservices.core.review.services;
 
 import api.core.review.Review;
 import api.core.review.ReviewService;
-import com.oracle.tools.packager.Log;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.logging.Level;

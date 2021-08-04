@@ -28,10 +28,14 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
   @Override
   public void createCompositeProduct(ProductAggregate body) {
+    LOG.warn("Create composite start");
     try {
+
+      LOG.warn("Create product start");
       Product product = new Product(body.getProductId(), body.getName(), body.getWeight(), null);
       integration.createProduct(product);
 
+      LOG.warn("Create recommendations start");
       if (body.getRecommendations() != null) {
         body.getRecommendations().forEach(r -> {
           Recommendation recommendation = new Recommendation(
@@ -45,8 +49,15 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
         });
       }
 
+      LOG.warn("review item size: {}", body.getReviews().size());
       if (body.getReviews() != null) {
         body.getReviews().forEach(r -> {
+          LOG.warn("review item={}, {}, {}, {}",
+              r.getReviewId(),
+              r.getAuthor(),
+              r.getContent(),
+              r.getSubject());
+
           Review review = new Review(
               body.getProductId(),
               r.getReviewId(),
