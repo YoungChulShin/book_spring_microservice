@@ -81,16 +81,10 @@ spring:
       bindings:
         output-products:  # 출력 채널
           destination: products   # 토픽 이름
-          producer:
-            requried-groups: auditGroup
         output-recommendations:
           destination: recommendations
-          producer:
-            requried-groups: auditGroup
         output-reviews:
           destination: reviews
-          producer:
-            requried-groups: auditGroup
 
       kafka:
         binder:

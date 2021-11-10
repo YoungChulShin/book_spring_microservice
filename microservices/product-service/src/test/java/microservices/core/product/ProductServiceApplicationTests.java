@@ -1,15 +1,11 @@
 package microservices.core.product;
 
 
-import microservices.core.product.persistence.ProductRepository;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.http.MediaType;
-import org.springframework.integration.channel.AbstractMessageChannel;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -17,20 +13,6 @@ public class ProductServiceApplicationTests {
 
   @Autowired
   private WebTestClient client;
-
-  @Autowired
-  private ProductRepository productRepository;
-
-  @Autowired
-  private Sink channels;
-
-  private AbstractMessageChannel input = null;
-
-  @Before
-  public void setup() {
-    input = (AbstractMessageChannel)channels.input();
-    productRepository.deleteAll().block();
-  }
 
   @Test
   public void getProductById() {
