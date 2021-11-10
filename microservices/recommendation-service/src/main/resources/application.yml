@@ -9,7 +9,7 @@ spring:
       database: recommendation-db
   cloud:
     stream:
-      default-binder: kafka
+      default-binder: rabbit
       default:
         contentType: application/json
       bindings:

@@ -75,7 +75,7 @@ app:
 spring:
   cloud:
     stream:
-      default-binder: kafka
+      default-binder: rabbit
       default:
         contentType: application/json
       bindings:
@@ -102,8 +102,3 @@ spring:
     port: 5672
     username: guest
     password: guest
-
-logging:
-  level:
-    root: INFO
-    microservices: INFO

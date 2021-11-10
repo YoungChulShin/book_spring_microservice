@@ -3,11 +3,12 @@ package microservices.core.product.services;
 import api.core.product.Product;
 import api.core.product.ProductService;
 import com.mongodb.DuplicateKeyException;
+import com.oracle.tools.packager.Log;
+import lombok.RequiredArgsConstructor;
 import microservices.core.product.persistence.ProductEntity;
 import microservices.core.product.persistence.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import util.exceptions.InvalidInputException;
@@ -15,6 +16,7 @@ import util.exceptions.NotFoundException;
 import util.http.ServiceUtil;
 
 @RestController
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
   private static final Logger LOG = LoggerFactory.getLogger(ProductServiceImpl.class);
@@ -22,15 +24,6 @@ public class ProductServiceImpl implements ProductService {
   private final ProductRepository productRepository;
   private final ProductMapper productMapper;
   private final ServiceUtil serviceUtil;
-
-  @Autowired
-  public ProductServiceImpl(
-      ProductRepository productRepository,
-      ProductMapper productMapper, ServiceUtil serviceUtil) {
-    this.productRepository = productRepository;
-    this.productMapper = productMapper;
-    this.serviceUtil = serviceUtil;
-  }
 
   @Override
   public Product createProduct(Product body) {

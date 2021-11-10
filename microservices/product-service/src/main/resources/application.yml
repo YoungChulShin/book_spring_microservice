@@ -9,7 +9,7 @@ spring:
       database: product-db
   cloud:
     stream:
-      defaultBinder: kafka
+      defaultBinder: rabbit
       default:
         contentType: application/json
       bindings:

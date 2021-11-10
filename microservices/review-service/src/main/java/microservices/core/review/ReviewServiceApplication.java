@@ -12,14 +12,15 @@ import org.springframework.context.annotation.ComponentScan;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
+@RequiredArgsConstructor
 @SpringBootApplication
 @ComponentScan(basePackages = {"microservices.core.review", "util"})
 public class ReviewServiceApplication {
 
   private static final Logger LOG = LoggerFactory.getLogger(ReviewServiceApplication.class);
 
-  @Value("${spring.datasource.maximum-pool-size}")
-  private Integer connectionPoolSize;
+  @Value("${spring.datasource.maximum-pool-size:10}")
+  private final Integer connectionPoolSize;
 
   public static void main(String[] args) {
     SpringApplication.run(ReviewServiceApplication.class, args);
