@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.health.Health;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
@@ -78,10 +77,10 @@ public class ProductCompositeIntegration implements
     this.messageSources = messageSources;
 
     this.productServiceUrl =
-        "http://" + productServiceHost + ":" + productServicePort;
+        "http://" + productServiceHost + ":" + productServicePort + "/product/";
     this.recommendationServiceUrl =
-        "http://" + recommendationServiceHost + ":" + recommendationServicePort;
-    this.reviewServiceUrl = "http://" + reviewServiceHost + ":" + reviewServicePort;
+        "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation?productId=";
+    this.reviewServiceUrl = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review?productId=";
   }
 
   @Override
@@ -95,7 +94,7 @@ public class ProductCompositeIntegration implements
 
   @Override
   public Mono<Product> getProduct(int productId) {
-    String url = productServiceUrl + "/product/" + productId;
+    String url = productServiceUrl + productId;
     LOG.debug("Will call getProductAPI on URL: {}", url);
 
     return webClient
@@ -130,7 +129,7 @@ public class ProductCompositeIntegration implements
 
   @Override
   public Flux<Recommendation> getRecommendations(int productId) {
-    String url = recommendationServiceUrl + "/recommendation?productId=" + productId;
+    String url = recommendationServiceUrl + productId;
     LOG.debug("Will call recommendationAPI on URL: {}", url);
 
     return webClient.get().uri(url).retrieve().bodyToFlux(Recommendation.class)
@@ -157,7 +156,7 @@ public class ProductCompositeIntegration implements
 
   @Override
   public Flux<Review> getReviews(int productId) {
-    String url = reviewServiceUrl + "/review?productId=" + productId;
+    String url = reviewServiceUrl + productId;
 
     LOG.debug("Will call getRewvies API on URL: {}, url");
 
@@ -173,28 +172,6 @@ public class ProductCompositeIntegration implements
         .send(MessageBuilder.withPayload(
             new Event(Type.DELETE, productId, null)).build());
   }
-
-  public Mono<Health> getProductHealth() {
-    return getHealth(productServiceUrl);
-  }
-
-  public Mono<Health> getRecommendationHealth() {
-    return getHealth(recommendationServiceUrl);
-  }
-
-  public Mono<Health> getReviewHealth() {
-    return getHealth(reviewServiceUrl);
-  }
-
-  private Mono<Health> getHealth(String url) {
-    url += "/actuator/health";
-
-    return webClient.get().uri(url).retrieve().bodyToMono(String.class)
-        .map(s -> new Health.Builder().up().build())
-        .onErrorResume(ex -> Mono.just(new Health.Builder().down(ex).build()))
-        .log();
-  }
-
   private Throwable handleException(Throwable ex) {
     if (!(ex instanceof WebClientResponseException)) {
       LOG.warn("Got an unexpected error: {}, will throw it", ex.toString());
