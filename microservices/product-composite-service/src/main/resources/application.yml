@@ -71,28 +71,3 @@ app:
   review-service:
     host: localhost
     port: 7003
-
-spring:
-  cloud:
-    stream:
-      default-binder: rabbit
-      default:
-        contentType: application/json
-      bindings:
-        output-products:  # 출력 채널
-          destination: products   # 토픽 이름
-        output-recommendations:
-          destination: recommendations
-        output-reviews:
-          destination: reviews
-
-      kafka:
-        binder:
-          brokers: 127.0.0.1
-          defaultBrokerPort: 9092
-
-  rabbitmq:
-    host: 127.0.0.1
-    port: 5672
-    username: guest
-    password: guest
