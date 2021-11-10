@@ -8,7 +8,6 @@ spring:
     password: pwd
     hikari:
       initialization-fail-timeout: 60000
-    maximum-pool-size: 10
   jpa:
     hibernate:
       ddl-auto: update
