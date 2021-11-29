@@ -15,7 +15,7 @@ configurations {
 }
 
 ext {
-    mapstructVersion = "1.3.1.Final"
+    mapstructVersion = "1.4.1.Final"
 }
 
 repositories {
