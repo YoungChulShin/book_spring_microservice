@@ -2,11 +2,15 @@ package microservices.core.product.services;
 
 import api.core.product.Product;
 import microservices.core.product.persistence.ProductEntity;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    injectionStrategy = InjectionStrategy.CONSTRUCTOR
+)
 public interface ProductMapper {
 
   @Mappings({
@@ -16,5 +20,5 @@ public interface ProductMapper {
   @Mappings({
       @Mapping(target = "id", ignore = true),
       @Mapping(target = "version", ignore = true)})
-  ProductEntity apiToEntit(Product api);
+  ProductEntity apiToEntity(Product api);
 }

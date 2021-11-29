@@ -1,0 +1,13 @@
+### Create Product
+POST http://localhost:7000/product-composite
+Content-Type: application/json
+
+{
+  "productId": {{productId}},
+  "name": "test product",
+  "weight": 100
+}
+
+### Get Product
+GET http://localhost:7000/product-composite/{{productId}}
+Content-Type: application/json

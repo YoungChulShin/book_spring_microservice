@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-07-24T16:02:12+0900",
-    comments = "version: 1.3.1.Final, compiler: javac, environment: Java 1.8.0_265 (Amazon.com Inc.)"
+    date = "2021-11-29T22:57:28+0900",
+    comments = "version: 1.4.1.Final, compiler: javac, environment: Java 1.8.0_265 (Amazon.com Inc.)"
 )
 @Component
 public class ProductMapperImpl implements ProductMapper {
@@ -25,7 +25,7 @@ public class ProductMapperImpl implements ProductMapper {
     }
 
     @Override
-    public ProductEntity apiToEntit(Product api) {
+    public ProductEntity apiToEntity(Product api) {
         if ( api == null ) {
             return null;
         }

@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
   @Override
   public Product createProduct(Product body) {
     try {
-      ProductEntity entity = productMapper.apiToEntit(body);
+      ProductEntity entity = productMapper.apiToEntity(body);
       ProductEntity newEntity = productRepository.save(entity);
       return productMapper.entityToApi(newEntity);
     } catch (DuplicateKeyException dke) {

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-07-24T16:15:30+0900",
-    comments = "version: 1.3.1.Final, compiler: javac, environment: Java 1.8.0_265 (Amazon.com Inc.)"
+    date = "2021-11-29T21:39:09+0900",
+    comments = "version: 1.4.1.Final, compiler: javac, environment: Java 1.8.0_265 (Amazon.com Inc.)"
 )
 @Component
 public class RecommendationMapperImpl implements RecommendationMapper {
@@ -41,10 +41,6 @@ public class RecommendationMapperImpl implements RecommendationMapper {
         RecommendationEntity recommendationEntity = new RecommendationEntity();
 
         recommendationEntity.setRating( api.getRate() );
-        recommendationEntity.setProductId( api.getProductId() );
-        recommendationEntity.setRecommendationId( api.getRecommendationId() );
-        recommendationEntity.setAuthor( api.getAuthor() );
-        recommendationEntity.setContent( api.getContent() );
 
         return recommendationEntity;
     }
