@@ -1,15 +1,17 @@
 package microservices.core.review.services;
 
 import api.core.review.Review;
+import api.core.review.Review.ReviewBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
 import microservices.core.review.persistence.ReviewEntity;
+import microservices.core.review.persistence.ReviewEntity.ReviewEntityBuilder;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-11-29T21:34:10+0900",
+    date = "2021-11-30T22:47:47+0900",
     comments = "version: 1.4.1.Final, compiler: javac, environment: Java 1.8.0_265 (Amazon.com Inc.)"
 )
 @Component
@@ -21,9 +23,15 @@ public class ReviewMapperImpl implements ReviewMapper {
             return null;
         }
 
-        Review review = new Review();
+        ReviewBuilder review = Review.builder();
 
-        return review;
+        review.productId( entity.getProductId() );
+        review.reviewId( entity.getReviewId() );
+        review.author( entity.getAuthor() );
+        review.subject( entity.getSubject() );
+        review.content( entity.getContent() );
+
+        return review.build();
     }
 
     @Override
@@ -32,9 +40,15 @@ public class ReviewMapperImpl implements ReviewMapper {
             return null;
         }
 
-        ReviewEntity reviewEntity = new ReviewEntity();
+        ReviewEntityBuilder reviewEntity = ReviewEntity.builder();
 
-        return reviewEntity;
+        reviewEntity.productId( api.getProductId() );
+        reviewEntity.reviewId( api.getReviewId() );
+        reviewEntity.author( api.getAuthor() );
+        reviewEntity.subject( api.getSubject() );
+        reviewEntity.content( api.getContent() );
+
+        return reviewEntity.build();
     }
 
     @Override

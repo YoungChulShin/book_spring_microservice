@@ -1,5 +1,6 @@
 package microservices.core.recommendation.persistence;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
@@ -33,6 +34,7 @@ public class RecommendationEntity {
   public RecommendationEntity() {
   }
 
+  @Builder
   public RecommendationEntity(
       int productId,
       int recommendationId,
@@ -44,8 +46,5 @@ public class RecommendationEntity {
     this.author = author;
     this.rating = rating;
     this.content = content;
-  }
-  public void setRating(int rating) {
-    this.rating = rating;
   }
 }

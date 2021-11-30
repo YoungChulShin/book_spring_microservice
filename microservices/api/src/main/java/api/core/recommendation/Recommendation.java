@@ -1,8 +1,7 @@
 package api.core.recommendation;
 
-import lombok.Setter;
+import lombok.Builder;
 
-@Setter
 public class Recommendation {
 
   private int productId;
@@ -21,6 +20,7 @@ public class Recommendation {
     serviceAddress = null;
   }
 
+  @Builder
   public Recommendation(int productId, int recommendationId, String author, int rate, String content, String serviceAddress) {
     this.productId = productId;
     this.recommendationId = recommendationId;

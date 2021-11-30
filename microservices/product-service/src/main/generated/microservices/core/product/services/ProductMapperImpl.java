@@ -1,13 +1,15 @@
 package microservices.core.product.services;
 
 import api.core.product.Product;
+import api.core.product.Product.ProductBuilder;
 import javax.annotation.Generated;
 import microservices.core.product.persistence.ProductEntity;
+import microservices.core.product.persistence.ProductEntity.ProductEntityBuilder;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-11-29T22:57:28+0900",
+    date = "2021-11-30T22:51:21+0900",
     comments = "version: 1.4.1.Final, compiler: javac, environment: Java 1.8.0_265 (Amazon.com Inc.)"
 )
 @Component
@@ -19,9 +21,13 @@ public class ProductMapperImpl implements ProductMapper {
             return null;
         }
 
-        Product product = new Product();
+        ProductBuilder product = Product.builder();
 
-        return product;
+        product.productId( entity.getProductId() );
+        product.name( entity.getName() );
+        product.weight( entity.getWeight() );
+
+        return product.build();
     }
 
     @Override
@@ -30,8 +36,12 @@ public class ProductMapperImpl implements ProductMapper {
             return null;
         }
 
-        ProductEntity productEntity = new ProductEntity();
+        ProductEntityBuilder productEntity = ProductEntity.builder();
 
-        return productEntity;
+        productEntity.productId( api.getProductId() );
+        productEntity.name( api.getName() );
+        productEntity.weight( api.getWeight() );
+
+        return productEntity.build();
     }
 }

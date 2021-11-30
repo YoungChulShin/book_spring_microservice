@@ -1,15 +1,17 @@
 package microservices.core.recommendation.services;
 
 import api.core.recommendation.Recommendation;
+import api.core.recommendation.Recommendation.RecommendationBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
 import microservices.core.recommendation.persistence.RecommendationEntity;
+import microservices.core.recommendation.persistence.RecommendationEntity.RecommendationEntityBuilder;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-11-29T21:39:09+0900",
+    date = "2021-11-30T22:51:26+0900",
     comments = "version: 1.4.1.Final, compiler: javac, environment: Java 1.8.0_265 (Amazon.com Inc.)"
 )
 @Component
@@ -21,15 +23,15 @@ public class RecommendationMapperImpl implements RecommendationMapper {
             return null;
         }
 
-        Recommendation recommendation = new Recommendation();
+        RecommendationBuilder recommendation = Recommendation.builder();
 
-        recommendation.setRate( entity.getRating() );
-        recommendation.setProductId( entity.getProductId() );
-        recommendation.setRecommendationId( entity.getRecommendationId() );
-        recommendation.setAuthor( entity.getAuthor() );
-        recommendation.setContent( entity.getContent() );
+        recommendation.rate( entity.getRating() );
+        recommendation.productId( entity.getProductId() );
+        recommendation.recommendationId( entity.getRecommendationId() );
+        recommendation.author( entity.getAuthor() );
+        recommendation.content( entity.getContent() );
 
-        return recommendation;
+        return recommendation.build();
     }
 
     @Override
@@ -38,11 +40,15 @@ public class RecommendationMapperImpl implements RecommendationMapper {
             return null;
         }
 
-        RecommendationEntity recommendationEntity = new RecommendationEntity();
+        RecommendationEntityBuilder recommendationEntity = RecommendationEntity.builder();
 
-        recommendationEntity.setRating( api.getRate() );
+        recommendationEntity.rating( api.getRate() );
+        recommendationEntity.productId( api.getProductId() );
+        recommendationEntity.recommendationId( api.getRecommendationId() );
+        recommendationEntity.author( api.getAuthor() );
+        recommendationEntity.content( api.getContent() );
 
-        return recommendationEntity;
+        return recommendationEntity.build();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package microservices.core.product.persistence;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
@@ -26,6 +27,7 @@ public class ProductEntity {
   public ProductEntity() {
   }
 
+  @Builder
   public ProductEntity(int productId, String name, int weight) {
     this.productId = productId;
     this.name = name;

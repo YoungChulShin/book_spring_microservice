@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import lombok.Builder;
 import lombok.Getter;
 
 @Entity
@@ -34,6 +35,7 @@ public class ReviewEntity {
   public ReviewEntity() {
   }
 
+  @Builder
   public ReviewEntity(int productId, int reviewId, String author, String subject, String content) {
     this.productId = productId;
     this.reviewId = reviewId;

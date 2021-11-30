@@ -1,5 +1,7 @@
 package api.core.review;
 
+import lombok.Builder;
+
 public class Review {
 
   private int productId;
@@ -18,6 +20,7 @@ public class Review {
     serviceAddress = null;
   }
 
+  @Builder
   public Review(int productId, int reviewId, String author, String subject, String content, String serviceAddress) {
     this.productId = productId;
     this.reviewId = reviewId;

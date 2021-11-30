@@ -1,5 +1,7 @@
 package api.core.product;
 
+import lombok.Builder;
+
 public class Product {
 
   private int productId;
@@ -17,6 +19,7 @@ public class Product {
     this.serviceAddress = null;
   }
 
+  @Builder
   public Product(int productId, String name, int weight, String serviceAddress) {
     this.productId = productId;
     this.name = name;
