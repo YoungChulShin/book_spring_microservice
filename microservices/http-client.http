@@ -5,9 +5,40 @@ Content-Type: application/json
 {
   "productId": {{productId}},
   "name": "test product",
-  "weight": 100
+  "weight": 100,
+  "recommendations": [
+    {
+      "recommendationId": 3,
+      "author": "test author",
+      "rate": 10,
+      "content": "very good"
+    },
+    {
+      "recommendationId": 4,
+      "author": "test author2",
+      "rate": 8,
+      "content": "very good2"
+    }
+  ],
+  "reviews": [
+  {
+    "reviewId": 3,
+    "author": "review author",
+    "subject": "review subject",
+    "content": "good review"
+  },
+  {
+    "reviewId": 4,
+    "author": "review author2",
+    "subject": "review subject2",
+    "content": "good review2"
+  }]
 }
 
 ### Get Product
 GET http://localhost:7000/product-composite/{{productId}}
+Content-Type: application/json
+
+### Delete Product
+DELETE http://localhost:7000/product-composite/{{productId}}
 Content-Type: application/json
