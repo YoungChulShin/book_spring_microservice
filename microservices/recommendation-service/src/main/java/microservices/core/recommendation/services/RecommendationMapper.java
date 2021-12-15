@@ -14,7 +14,8 @@ import org.mapstruct.Mappings;
 public interface RecommendationMapper {
 
   @Mappings({
-      @Mapping(target = "rate", source = "entity.rating")})
+      @Mapping(target = "rate", source = "entity.rating"),
+      @Mapping(target = "serviceAddress", ignore = true)})
   Recommendation entityToApi(RecommendationEntity entity);
 
   @Mappings({

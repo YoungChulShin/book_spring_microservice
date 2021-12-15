@@ -37,3 +37,6 @@ out/
 .vscode/
 
 /.idea/httpRequests/
+
+### MapStruct
+**/src/main/generated/

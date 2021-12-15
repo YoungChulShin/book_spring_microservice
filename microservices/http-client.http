@@ -3,18 +3,18 @@ POST http://localhost:7000/product-composite
 Content-Type: application/json
 
 {
-  "productId": {{productId}},
+  "productId": 5,
   "name": "test product",
   "weight": 100,
   "recommendations": [
     {
-      "recommendationId": 3,
+      "recommendationId": 9,
       "author": "test author",
       "rate": 10,
       "content": "very good"
     },
     {
-      "recommendationId": 4,
+      "recommendationId": 10,
       "author": "test author2",
       "rate": 8,
       "content": "very good2"
@@ -22,13 +22,13 @@ Content-Type: application/json
   ],
   "reviews": [
   {
-    "reviewId": 3,
+    "reviewId": 9,
     "author": "review author",
     "subject": "review subject",
     "content": "good review"
   },
   {
-    "reviewId": 4,
+    "reviewId": 10,
     "author": "review author2",
     "subject": "review subject2",
     "content": "good review2"
@@ -36,7 +36,7 @@ Content-Type: application/json
 }
 
 ### Get Product
-GET http://localhost:7000/product-composite/{{productId}}
+GET http://localhost:7000/product-composite/5
 Content-Type: application/json
 
 ### Delete Product
