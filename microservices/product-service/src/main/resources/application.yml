@@ -7,6 +7,28 @@ spring:
       host: localhost
       port: 27017
       database: product-db
+  cloud:
+    stream:
+      default-binder: kafka
+      default.contentType: application/json
+      bindings:
+        input:
+          destination: products # 토픽
+          group: productGroup # 컨슈머 그룹
+          consumer:
+            # Dead Letter 처리를 위한 설정
+            maxAttemps: 3
+            backOffInitialInterval: 500
+            backOffMaxInterval: 1000
+            backOffMultiplier: 2.0
+      kafka:
+        bindings:
+          input:
+            consumer:
+              enableDlq: true
+        binder:
+          brokers: 127.0.0.1
+          defaultBrokerPort: 9092
 
 logging:
   level:
