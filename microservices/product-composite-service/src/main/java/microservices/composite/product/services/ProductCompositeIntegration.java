@@ -6,6 +6,8 @@ import api.core.recommendation.Recommendation;
 import api.core.recommendation.RecommendationService;
 import api.core.review.Review;
 import api.core.review.ReviewService;
+import api.event.Event;
+import api.event.Event.Type;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -81,15 +84,12 @@ public class ProductCompositeIntegration implements
 
   @Override
   public Product createProduct(Product body) {
-    try {
-      return restTemplate.postForObject(productServiceUrl, body, Product.class);
-    } catch (HttpClientErrorException ex) {
-      throw handleHttpClientException(ex);
-    }
+    messageSources.outputProducts().send(
+        MessageBuilder.withPayload(new Event(Type.CREATE, body.getProductId(), body)).build());
+    return body;
   }
 
   @Override
-  public Mono<Product> getProduct(int productId) {
   public Mono<Product> getProduct(int productId) {
     String url = productServiceUrl + productId;
     LOG.debug("Will call getProductAPI on URL: {}", url);
@@ -101,20 +101,15 @@ public class ProductCompositeIntegration implements
 
   @Override
   public void deleteProduct(int productId) {
-    try {
-      restTemplate.delete(productServiceUrl + "/" + productId);
-    } catch (HttpClientErrorException ex) {
-      throw handleHttpClientException(ex);
-    }
+    messageSources.outputProducts().send(
+        MessageBuilder.withPayload(new Event(Type.DELETE, productId, null)).build());
   }
 
   @Override
   public Recommendation createRecommendation(Recommendation body) {
-    try {
-      return restTemplate.postForObject(recommendationServiceUrl, body, Recommendation.class);
-    } catch (HttpClientErrorException ex) {
-      throw handleHttpClientException(ex);
-    }
+    messageSources.outputRecommendations().send(
+        MessageBuilder.withPayload(new Event(Type.CREATE, body.getProductId(), body)).build());
+    return body;
   }
 
   @Override
@@ -131,20 +126,15 @@ public class ProductCompositeIntegration implements
 
   @Override
   public void deleteRecommendations(int productId) {
-    try {
-      restTemplate.delete(recommendationServiceUrl + productId);
-    } catch (HttpClientErrorException ex) {
-      throw handleHttpClientException(ex);
-    }
+    messageSources.outputRecommendations().send(
+        MessageBuilder.withPayload(new Event(Type.DELETE, productId, null)).build());
   }
 
   @Override
   public Review createReview(Review body) {
-    try {
-      return restTemplate.postForObject(reviewServiceUrl, body, Review.class);
-    } catch (HttpClientErrorException ex) {
-      throw handleHttpClientException(ex);
-    }
+    messageSources.outputReviews().send(
+        MessageBuilder.withPayload(new Event(Type.CREATE, body.getProductId(), body)).build());
+    return body;
   }
 
   @Override
@@ -160,11 +150,8 @@ public class ProductCompositeIntegration implements
 
   @Override
   public void deleteReviews(int productId) {
-    try {
-      restTemplate.delete(reviewServiceUrl + productId);
-    } catch (HttpClientErrorException ex) {
-      throw handleHttpClientException(ex);
-    }
+    messageSources.outputRecommendations().send(
+        MessageBuilder.withPayload(new Event(Type.DELETE, productId, null)).build());
   }
 
   private Throwable handleException(Throwable ex) {
