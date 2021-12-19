@@ -71,3 +71,21 @@ app:
   review-service:
     host: localhost
     port: 7003
+
+spring:
+  cloud:
+    stream:
+      default-binder: kafka
+      default.contentType: application/json
+      bindings:
+        # 출력 채널과 토픽을 바인딩
+        output-products:
+          destination: products
+        output-recommendations:
+          destination: recommendations
+        ouput-reviews:
+          destination: reviews
+      kafka:
+        binder:
+          brokers: 127.0.0.1
+          defaultBrokerPort: 9092

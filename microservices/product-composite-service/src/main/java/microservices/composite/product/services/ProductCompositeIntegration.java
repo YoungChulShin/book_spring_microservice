@@ -8,17 +8,15 @@ import api.core.review.Review;
 import api.core.review.ReviewService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.Output;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -27,6 +25,7 @@ import util.exceptions.InvalidInputException;
 import util.exceptions.NotFoundException;
 import util.http.HttpErrorInfo;
 
+@EnableBinding(ProductCompositeIntegration.MessageSources.class)
 @Component
 public class ProductCompositeIntegration implements
     ProductService,
@@ -42,10 +41,28 @@ public class ProductCompositeIntegration implements
   private final String recommendationServiceUrl;
   private final String reviewServiceUrl;
 
+  private MessageSources messageSources;
+
+  public interface MessageSources {
+    String OUTPUT_PRODUCTS = "output-products";
+    String OUTPUT_RECOMMENDATIONS = "output-recommendations";
+    String OUTPUT_REVIEWS = "output-reviews";
+
+    @Output(OUTPUT_PRODUCTS)
+    MessageChannel outputProducts();
+
+    @Output(OUTPUT_RECOMMENDATIONS)
+    MessageChannel outputRecommendations();
+
+    @Output(OUTPUT_REVIEWS)
+    MessageChannel outputReviews();
+  }
+
   @Autowired
   public ProductCompositeIntegration(
       WebClient.Builder webClientBuilder,
       ObjectMapper mapper,
+      MessageSources messageSources,
       @Value("${app.product-service.host}") String productServiceHost,
       @Value("${app.product-service.port}") int productServicePort,
       @Value("${app.recommendation-service.host}") String recommendationServiceHost,
@@ -54,6 +71,7 @@ public class ProductCompositeIntegration implements
       @Value("${app.review-service.port}") int reviewServicePort) {
     this.webClient = webClientBuilder.build();
     this.mapper = mapper;
+    this.messageSources = messageSources;
     this.productServiceUrl =
         "http://" + productServiceHost + ":" + productServicePort + "/product/";
     this.recommendationServiceUrl =
