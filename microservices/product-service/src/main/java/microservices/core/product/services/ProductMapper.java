@@ -12,9 +12,9 @@ import org.mapstruct.Mappings;
     injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ProductMapper {
 
+  @Mappings({
+      @Mapping(target = "serviceAddress", ignore = true)})
   Product entityToApi(ProductEntity entity);
 
-  @Mappings({
-      @Mapping(target = "productId", source = "api.productId")})
   ProductEntity apiToEntity(Product api);
 }

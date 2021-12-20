@@ -32,7 +32,7 @@ public class ReviewEntity {
 
   private String content;
 
-  public ReviewEntity() {
+  protected ReviewEntity() {
   }
 
   @Builder

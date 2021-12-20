@@ -17,8 +17,6 @@ public interface ReviewMapper {
       @Mapping(target = "serviceAddress", ignore = true))
   Review entityToApi(ReviewEntity entity);
 
-  @Mappings(
-      @Mapping(target = "productId", source = "api.productId"))
   ReviewEntity apiToEntity(Review api);
 
   List<Review> entityListToApiList(List<ReviewEntity> entity);

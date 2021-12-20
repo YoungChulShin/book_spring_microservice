@@ -31,7 +31,7 @@ public class RecommendationEntity {
 
   private String content;
 
-  public RecommendationEntity() {
+  protected RecommendationEntity() {
   }
 
   @Builder

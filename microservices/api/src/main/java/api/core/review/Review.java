@@ -11,7 +11,7 @@ public class Review {
   private String content;
   private String serviceAddress;
 
-  public Review() {
+  protected Review() {
     productId = 0;
     reviewId = 0;
     author = null;

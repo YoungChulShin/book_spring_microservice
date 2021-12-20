@@ -12,7 +12,7 @@ public class Product {
 
   private String serviceAddress;
 
-  public Product() {
+  protected Product() {
     this.productId = 0;
     this.name =  null;
     this.weight = 0;
