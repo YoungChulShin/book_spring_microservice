@@ -1,7 +1,7 @@
-package microservices.core.product.services;
+package microservices.core.recommendation.services;
 
-import api.core.product.Product;
-import api.core.product.ProductService;
+import api.core.recommendation.Recommendation;
+import api.core.recommendation.RecommendationService;
 import api.event.Event;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -17,19 +17,18 @@ public class MessageProcessor {
 
   private static final Logger LOG = LoggerFactory.getLogger(MessageProcessor.class);
 
-  private final ProductService productService;
+  private final RecommendationService recommendationService;
 
   @StreamListener(target = Sink.INPUT)
-  public void process(Event<Integer, Product> event) {
+  public void process(Event<Integer, Recommendation> event) {
     LOG.info("Process message created at {}...", event.getEventCreatedAt());
 
     switch (event.getEventType()) {
       case CREATE:
-        Product product = event.getData();
-        productService.createProduct(product);
+        recommendationService.createRecommendation(event.getData());
         break;
       case DELETE:
-        productService.deleteProduct(event.getKey());
+        recommendationService.deleteRecommendations(event.getKey());
         break;
       default:
         String errorMessage = "Incorrect event type: " + event.getEventType() + ", expected a CREATE or DELETE event";
