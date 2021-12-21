@@ -92,7 +92,7 @@ public class ProductCompositeIntegration implements
   @Override
   public Mono<Product> getProduct(int productId) {
     String url = productServiceUrl + productId;
-    LOG.debug("Will call getProductAPI on URL: {}", url);
+    LOG.info("Will call getProductAPI on URL: {}", url);
 
     return webClient.get()
         .uri(url).retrieve().bodyToMono(Product.class)
@@ -116,7 +116,7 @@ public class ProductCompositeIntegration implements
   public Flux<Recommendation> getRecommendations(int productId) {
       String url = recommendationServiceUrl + productId;
 
-      LOG.debug("Will call recommendationAPI on URL: {}", url);
+      LOG.info("Will call recommendationAPI on URL: {}", url);
 
       return webClient.get()
           .uri(url).retrieve().bodyToFlux(Recommendation.class)
@@ -140,7 +140,7 @@ public class ProductCompositeIntegration implements
   @Override
   public Flux<Review> getReviews(int productId) {
       String url = reviewServiceUrl + productId;
-      LOG.debug("Will call getRewvies API on URL: {}, url");
+      LOG.info("Will call getRewvies API on URL: {}, url");
 
       return webClient.get()
           .uri(url).retrieve().bodyToFlux(Review.class)

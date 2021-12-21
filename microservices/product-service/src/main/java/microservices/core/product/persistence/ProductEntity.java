@@ -24,7 +24,7 @@ public class ProductEntity {
 
   private int weight;
 
-  public ProductEntity() {
+  protected ProductEntity() {
   }
 
   @Builder

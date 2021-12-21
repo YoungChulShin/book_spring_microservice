@@ -83,7 +83,7 @@ spring:
           destination: products
         output-recommendations:
           destination: recommendations
-        ouput-reviews:
+        output-reviews:
           destination: reviews
       kafka:
         binder:

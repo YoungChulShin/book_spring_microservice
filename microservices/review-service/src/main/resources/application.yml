@@ -11,6 +11,27 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  cloud:
+    stream:
+      default-binder: kafka
+      default.contentType: application/json
+      bindings:
+        input:
+          destination: reviews
+          group: reviewGroup
+          comsumer:
+            maxAttemps: 3
+            backOffInitialInterval: 500
+            backOffMaxInterval: 1000
+            backOffMultiplier: 2.0
+      kafka:
+        bindings:
+          input:
+            consumer:
+              enableDlq: true
+        binder:
+          brokers: 127.0.0.1
+          defaultBrockerPort: 9092
 
 logging:
   lovel:
