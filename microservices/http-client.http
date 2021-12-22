@@ -1,5 +1,5 @@
 ### Create Product
-POST http://localhost:7000/product-composite
+POST http://localhost:8080/product-composite
 Content-Type: application/json
 
 {
@@ -36,7 +36,7 @@ Content-Type: application/json
 }
 
 ### Get Product
-GET http://localhost:7000/product-composite/7
+GET http://localhost:8080/product-composite/7
 Content-Type: application/json
 
 ### Delete Product
