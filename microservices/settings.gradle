@@ -5,3 +5,5 @@ include 'recommendation-service'
 include 'review-service'
 include 'api'
 include 'util'
+include 'eureka-server'
+
