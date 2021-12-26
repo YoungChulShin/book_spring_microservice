@@ -15,8 +15,7 @@ configurations {
 }
 
 ext {
-    mapstructVersion = "1.4.1.Final"
-    springCloudVersion = "Hoxton.SR6"
+    springCloudVersion = "2020.0.5"
 }
 
 repositories {

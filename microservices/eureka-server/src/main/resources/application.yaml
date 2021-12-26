@@ -2,14 +2,14 @@ server:
   port: 8761
 
 eureka:
-  instance:
+  instance: # 유레카 서버에 자신을 등록하려는 마이크로서비스 인스턴스를 위한 정보
     hostname: localhost
-  client:
+  client: # 유레카 서버와 통신하는 클라이언트를 위한 설정
     register-with-eureka: false
     fetch-registry: false
     service-url:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
-  server:
+  server: # 서버 설정
     wait-time-in-ms-when-sync-empty: 0
     response-cache-update-interval-ms: 5000
 
@@ -17,4 +17,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*""
+        include: "*"
