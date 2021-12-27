@@ -16,7 +16,8 @@ configurations {
 
 ext {
     mapstructVersion = "1.4.1.Final"
-    springCloudVersion = "Hoxton.SR6"
+    //springCloudVersion = "Hoxton.SR6"
+    springCloudVersion = "2020.0.5"
 }
 
 repositories {
@@ -32,6 +33,7 @@ dependencies {
     implementation("org.mapstruct:mapstruct:${mapstructVersion}")
     implementation('org.springframework.boot:spring-boot-starter-data-mongodb-reactive')
     implementation('org.springframework.cloud:spring-cloud-starter-stream-kafka')
+    implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
 
     compileOnly 'org.projectlombok:lombok'
     compileOnly "org.mapstruct:mapstruct-processor:${mapstructVersion}"

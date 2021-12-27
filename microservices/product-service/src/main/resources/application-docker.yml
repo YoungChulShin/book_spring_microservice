@@ -10,3 +10,7 @@ spring:
       kafka:
         binder:
           brokers: kafka
+
+eureka:
+  client:
+    service-url: http://eureka:8761/eureka

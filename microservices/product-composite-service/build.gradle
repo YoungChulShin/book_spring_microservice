@@ -19,7 +19,8 @@ repositories {
 }
 
 ext {
-    springCloudVersion = "Hoxton.SR6"
+    //springCloudVersion = "Hoxton.SR6"
+    springCloudVersion = "2020.0.5"
 }
 
 dependencies {
