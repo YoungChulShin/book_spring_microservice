@@ -73,6 +73,8 @@ app:
     port: 7003
 
 spring:
+  application:
+    name: product-composite
   cloud:
     stream:
       default-binder: kafka

@@ -2,6 +2,8 @@ server:
   port: 7003
 
 spring:
+  application:
+    name: review
   datasource:
     url: jdbc:mysql://localhost:3306/review-db
     username: user

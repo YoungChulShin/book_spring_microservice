@@ -37,14 +37,15 @@ public class ProductCompositeIntegration implements
 
   private static final Logger LOG = LoggerFactory.getLogger(ProductCompositeIntegration.class);
 
-  private final WebClient webClient;
+  private final WebClient.Builder webClientBuilder;
   private final ObjectMapper mapper;
 
-  private final String productServiceUrl;
-  private final String recommendationServiceUrl;
-  private final String reviewServiceUrl;
+  private final String productServiceUrl = "http://product";
+  private final String recommendationServiceUrl = "http://recommendation";
+  private final String reviewServiceUrl = "http://review";
 
   private MessageSources messageSources;
+  private WebClient webClient;
 
   public interface MessageSources {
     String OUTPUT_PRODUCTS = "output-products";
@@ -65,21 +66,10 @@ public class ProductCompositeIntegration implements
   public ProductCompositeIntegration(
       WebClient.Builder webClientBuilder,
       ObjectMapper mapper,
-      MessageSources messageSources,
-      @Value("${app.product-service.host}") String productServiceHost,
-      @Value("${app.product-service.port}") int productServicePort,
-      @Value("${app.recommendation-service.host}") String recommendationServiceHost,
-      @Value("${app.recommendation-service.port}") int recommendationServicePort,
-      @Value("${app.review-service.host}") String reviewServiceHost,
-      @Value("${app.review-service.port}") int reviewServicePort) {
-    this.webClient = webClientBuilder.build();
+      MessageSources messageSources) {
+    this.webClientBuilder = webClientBuilder;
     this.mapper = mapper;
     this.messageSources = messageSources;
-    this.productServiceUrl =
-        "http://" + productServiceHost + ":" + productServicePort + "/product/";
-    this.recommendationServiceUrl =
-        "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation?productId=";
-    this.reviewServiceUrl = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review?productId=";
   }
 
   @Override
@@ -91,10 +81,10 @@ public class ProductCompositeIntegration implements
 
   @Override
   public Mono<Product> getProduct(int productId) {
-    String url = productServiceUrl + productId;
+    String url = productServiceUrl + "/product/" + productId;
     LOG.info("Will call getProductAPI on URL: {}", url);
 
-    return webClient.get()
+    return getWebClient().get()
         .uri(url).retrieve().bodyToMono(Product.class)
         .onErrorMap(HttpClientErrorException.class, this::handleException);
   }
@@ -114,11 +104,11 @@ public class ProductCompositeIntegration implements
 
   @Override
   public Flux<Recommendation> getRecommendations(int productId) {
-      String url = recommendationServiceUrl + productId;
+      String url = recommendationServiceUrl + "/recommendation?productId=" + productId;
 
       LOG.info("Will call recommendationAPI on URL: {}", url);
 
-      return webClient.get()
+      return getWebClient().get()
           .uri(url).retrieve().bodyToFlux(Recommendation.class)
           .log()
           .onErrorResume(error -> Flux.empty());
@@ -139,10 +129,10 @@ public class ProductCompositeIntegration implements
 
   @Override
   public Flux<Review> getReviews(int productId) {
-      String url = reviewServiceUrl + productId;
+      String url = reviewServiceUrl + "/review?productId=" + productId;
       LOG.info("Will call getRewvies API on URL: {}, url");
 
-      return webClient.get()
+      return getWebClient().get()
           .uri(url).retrieve().bodyToFlux(Review.class)
           .log()
           .onErrorResume(error -> Flux.empty());
@@ -152,6 +142,14 @@ public class ProductCompositeIntegration implements
   public void deleteReviews(int productId) {
     messageSources.outputRecommendations().send(
         MessageBuilder.withPayload(new Event(Type.DELETE, productId, null)).build());
+  }
+
+  private WebClient getWebClient() {
+    if (webClient == null) {
+      webClient = webClientBuilder.build();
+    }
+
+    return webClient;
   }
 
   private Throwable handleException(Throwable ex) {
